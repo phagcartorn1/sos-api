@@ -30,6 +30,9 @@ app.post('/createUser', (req, res) => {
     var userName = req.body.userName;
     var password = req.body.password;
     var type = req.body.type;
+    var name = req.body.name;
+
+    console.log("crated name  : ",name);
 
 
     User.find({ userName: userName, password: password }).then((u) => {
@@ -42,7 +45,8 @@ app.post('/createUser', (req, res) => {
                 userName: userName,
                 password, password,
                 type: type,
-                onlineStatus: false
+                onlineStatus: false,
+                name:name
             })
 
             newUser.save().then((doc) => {
@@ -104,17 +108,41 @@ app.post('/login', (req, res) => {
 
         if (u.length > 0) {
             var xUser = u[0];
-            res.status(200).send({
-                status: 200,
-                data: {
-                    onlineStatus: xUser.onlineStatus,
-                    _id: xUser._id,
-                    type: xUser.type,
-                    name: "สมศรี คิดดี"
-                },
-                message: "Login success !",
-                error: null
-            });
+            
+            // update online statue : true
+            xUser.onlineStatus = true
+            xUser.save().then((doc)=>{
+
+
+
+
+                res.status(200).send({
+                    status: 200,
+                    data: {
+                        onlineStatus: doc.onlineStatus,
+                        _id: doc._id,
+                        type: doc.type,
+                        name: doc.name,
+                    },
+                    message: "Login success !!",
+                    error: null
+                });
+
+
+
+            },(e)=>{
+
+
+                res.status(400).send({
+                    status: 400,
+                    data: null,
+                    message: "can not update status , please check the error ",
+                    error: e
+                });
+
+            })
+
+
         }
         else {
             res.status(400).send({

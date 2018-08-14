@@ -22,7 +22,14 @@ var User = mongoose.model('User',{
     onlineStatus:{
         type:Boolean,
         default : true
+    },
+    name : {
+        type:String,
+        required:true,
+        trim:true,
+        minlenght:1
     }
+   
 });
 
 
