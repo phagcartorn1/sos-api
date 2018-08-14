@@ -15,20 +15,17 @@ const port = process.env.PORT || 3000;
 var app = express();
 app.use(bodyParser.json());
 
-app.get('/login',(req,res)=>{
+// app.get('/login',(req,res)=>{
 
-    var userName = req.userName;
-    var password = req.password;
+//     var userName = req.userName;
+//     var password = req.password;
 
-    res.send({status:"ok"});
+//     res.send({status:"ok"});
 
-});
+// });
 
 
 app.post('/call',(req,res)=>{
-    
-
-    
     
     opentok.createSession((err, session)=>{
 
