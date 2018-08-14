@@ -13,9 +13,6 @@ app.post('/login',(req,res)=>{
     var userName = req.userName;
     var password = req.password;
 
-
-
-
 });
 
 
