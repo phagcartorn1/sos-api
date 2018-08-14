@@ -18,7 +18,13 @@ var User = mongoose.model('User',{
         required:true,
         trim:true,
         minlenght:1       
+    },
+    onlineStatus:{
+        type:Boolean,
+        default : true
     }
 });
+
+
 
 module.exports = {User};
