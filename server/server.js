@@ -95,7 +95,7 @@ app.post('/createUser', (req, res) => {
 
 app.post('/login', (req, res) => {
 
-    var userName = req.body.userName;
+    var userName = req.body.username;
     var password = req.body.password;
 
 
@@ -109,7 +109,8 @@ app.post('/login', (req, res) => {
                 data: {
                     onlineStatus: xUser.onlineStatus,
                     _id: xUser._id,
-                    type: xUser.type
+                    type: xUser.type,
+                    name: "สมศรี คิดดี"
                 },
                 message: "Login success !",
                 error: null
@@ -141,8 +142,6 @@ app.post('/login', (req, res) => {
 
 
 });
-
-
 
 app.post('/call', (req, res) => {
 
