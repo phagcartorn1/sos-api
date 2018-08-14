@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-
+const SocketIO = require('socket.io'); 
+const http = require('http');
 var { mongoose } = require('./db/mongoose');
 var { User } = require('./models/user');
 var { opentok } = require('./openTox/opentox');
@@ -23,6 +24,19 @@ var allowCrossDomain = function(req, res, next) {
 };
 app.use(allowCrossDomain);
 app.use(bodyParser.json());
+
+app.use(express.static(__dirname));
+
+var server = http.createServer(app);
+var io = SocketIO(server);
+
+
+app.get("/",(req,res)=>{
+
+    res.send("ok");
+
+});
+
 
 
 app.post('/createUser', (req, res) => {
@@ -95,7 +109,7 @@ app.post('/createUser', (req, res) => {
 
     })
 
-})
+});
 
 app.post('/login', (req, res) => {
 
@@ -110,11 +124,12 @@ app.post('/login', (req, res) => {
             var xUser = u[0];
             
             // update online statue : true
-            xUser.onlineStatus = true
+            xUser.onlineStatus = true;
+            var listenSocket = "call";
+            if(xUser.type == "C"){
+                listenSocket = null;
+            }
             xUser.save().then((doc)=>{
-
-
-
 
                 res.status(200).send({
                     status: 200,
@@ -123,6 +138,7 @@ app.post('/login', (req, res) => {
                         _id: doc._id,
                         type: doc.type,
                         name: doc.name,
+                        socketName : listenSocket
                     },
                     message: "Login success !!",
                     error: null
@@ -173,10 +189,8 @@ app.post('/login', (req, res) => {
 
 app.post('/call', (req, res) => {
 
-
-
     var userID = req.body.userID;
-
+    
     User.findById(userID).then((u) => {
 
         if(u == null){
@@ -189,6 +203,17 @@ app.post('/call', (req, res) => {
             return;
         }
 
+        if(u.type == "A"){
+            res.status(400).send({
+                stauts: '400',
+                data: null,
+                message: 'user type A (Agent) can not call , Please check user type must be C (Client)',
+                error: null
+            });
+            return;
+        }
+
+
         opentok.createSession((err, session) => {
 
             if (err) {
@@ -200,7 +225,18 @@ app.post('/call', (req, res) => {
                 })
             }
             else {
+
                 var toxToken = session.generateToken();
+
+                // find agent
+                // open socket
+
+                io.emit('call',{
+                    token: toxToken,
+                    sessionID: session.sessionId,
+                    message:'In coming call form client' 
+                });
+
                 res.status(200).send({
                     stauts: '200',
                     data: { token: toxToken, sessionID: session.sessionId },
@@ -222,21 +258,10 @@ app.post('/call', (req, res) => {
 
     })
 
-
-
-
-
-
-
 });
 
-
-
-
-
-
-app.listen(port, () => {
-
+server.listen(port, () => {
     console.log("server start on port ", port);
-
 });
+
+
