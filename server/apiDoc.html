@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>API Document</title>
+</head>
+<body>
+
+<h1>API Document</h1>
+
+<p>
+    <h3>/login<h3>
+    <p> method : post <p>  
+    <p> param : {
+            "userName" : "pcs@ii.co.th",
+            "password" : "1234"
+          } 
+     <p>  
+     <p>   --- Success response --- </p>  
+     <p> response :{
+            "status": 200,
+            "data": {
+                "onlineStatus": false,
+                "_id": "5b726af9e6c9310014476b9e",
+                "userName": "pcs@ii.co.th",
+                "password": "1234",
+                "type": "A",
+                "__v": 0
+            },
+            "message": "Login success !",
+            "error": null
+        }
+     <p>  
+     <p>   --- Failed response --- </p>  
+     <p> response :{
+            "status": 400,
+            "data": null,
+            "message": "User not found! , Please check userName or password",
+            "error": null
+        }
+     <p>  
+    
+
+
+
+</p>
+
+
+
+</body>
+</html>
+
+

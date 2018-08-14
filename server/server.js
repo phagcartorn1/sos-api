@@ -90,10 +90,14 @@ app.post('/login',(req,res)=>{
 
 
       if(u.length > 0){
-
+         var xUser = u[0];
           res.status(200).send({
               status:200,
-              data: u[0],
+              data: {
+                onlineStatus:xUser.onlineStatus,
+                _id:xUser._id,
+                type:xUser.type
+              },
               message:"Login success !",
               error:null
           });
