@@ -44,8 +44,6 @@ app.post('/createUser', (req, res) => {
     var type = req.body.type;
     var name = req.body.name;
 
-    console.log("crated name  : ", name);
-
 
     User.find({ userName: userName, password: password }).then((u) => {
 
@@ -63,7 +61,7 @@ app.post('/createUser', (req, res) => {
 
             newUser.save().then((doc) => {
 
-                res.status(200).send({
+                res.send({
                     status: 200,
                     data: doc,
                     message: "Create new user success",
@@ -73,7 +71,7 @@ app.post('/createUser', (req, res) => {
 
             }, (e) => {
 
-                res.status(400).send({
+                res.send({
                     status: 400,
                     data: null,
                     message: "Exception error, please check error filed",
@@ -85,7 +83,7 @@ app.post('/createUser', (req, res) => {
 
         }
         else {
-            res.status(400).send({
+            res.send({
                 status: 400,
                 data: null,
                 message: "This username already exits, Please try another userName",
@@ -98,7 +96,7 @@ app.post('/createUser', (req, res) => {
     }, (e) => {
 
 
-        res.status(400).send({
+        res.send({
             status: 400,
             data: null,
             message: "Exception error, please check error filed",
@@ -129,7 +127,7 @@ app.post('/login', (req, res) => {
             }
             xUser.save().then((doc) => {
 
-                res.status(200).send({
+                res.send({
                     status: 200,
                     data: {
                         onlineStatus: doc.onlineStatus,
@@ -147,7 +145,7 @@ app.post('/login', (req, res) => {
             }, (e) => {
 
 
-                res.status(400).send({
+                res.send({
                     status: 400,
                     data: null,
                     message: "can not update status , please check the error ",
@@ -159,7 +157,7 @@ app.post('/login', (req, res) => {
 
         }
         else {
-            res.status(400).send({
+            res.send({
                 status: 400,
                 data: null,
                 message: "User not found! , Please check userName or password",
@@ -173,7 +171,7 @@ app.post('/login', (req, res) => {
 
         console.log('failed :', e);
 
-        res.status(400).send({
+        res.send({
             status: 400,
             data: null,
             message: "Exception error, please check error filed",
@@ -194,7 +192,7 @@ app.post('/call', (req, res) => {
     User.findById(userID).then((u) => {
 
         if (u == null) {
-            res.status(400).send({
+            res.send({
                 stauts: '400',
                 data: null,
                 message: 'userid not found, please check your userid or login again',
@@ -204,7 +202,7 @@ app.post('/call', (req, res) => {
         }
 
         if (u.type == "A") {
-            res.status(400).send({
+            res.send({
                 stauts: '400',
                 data: null,
                 message: 'user type A (Agent) can not call , Please check user type must be C (Client)',
@@ -217,7 +215,7 @@ app.post('/call', (req, res) => {
         opentok.createSession((err, session) => {
 
             if (err) {
-                res.status(400).send({
+                res.send({
                     stauts: '400',
                     data: null,
                     message: 'open tox can not generate session',
@@ -241,7 +239,7 @@ app.post('/call', (req, res) => {
                             message: 'In coming call form client'
                         });
 
-                        res.status(200).send({
+                        res.send({
                             stauts: '200',
                             data: { token: toxToken, sessionID: session.sessionId },
                             message: 'open tox generate token success',
@@ -253,7 +251,7 @@ app.post('/call', (req, res) => {
 
 
                         // No agent avaliable
-                        res.status(400).send({
+                        res.send({
                             status: 400,
                             data: null,
                             message: "No agent avaliable or match with your options , Please try other topic and language",
@@ -264,7 +262,7 @@ app.post('/call', (req, res) => {
 
 
                 }, (e) => {
-                    res.status(400).send({
+                    res.send({
                         status: 400,
                         data: null,
                         message: "Exception error, please check error filed",
@@ -280,7 +278,7 @@ app.post('/call', (req, res) => {
 
     }, (e) => {
 
-        res.status(400).send({
+        res.send({
             status: 400,
             data: null,
             message: "Exception error, please check error filed",
