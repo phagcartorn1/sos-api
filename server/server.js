@@ -187,7 +187,7 @@ app.post('/login', (req, res) => {
 
 app.post('/call', (req, res) => {
 
-    var userID = req.body.userID;
+    var userID = req.body.userId;
     var topicId = req.body.topicId;
     var languageId = req.body.languageId;
 
@@ -290,6 +290,38 @@ app.post('/call', (req, res) => {
     })
 
 });
+
+app.post('/setOnlineStatus', ()=>{
+    var userID = req.body.userID;
+
+    User.findById(userID).then((u)=>{
+
+        if (u == null) {
+            res.send({
+                stauts: '400',
+                data: null,
+                message: 'userid not found, please check your userid or login again',
+                error: null
+            });
+            return;
+        }
+
+
+
+    },(e)=>{
+
+        res.send({
+            status: 400,
+            data: null,
+            message: "Exception error, please check error filed",
+            error: e
+        });
+
+    })
+
+
+});
+
 
 server.listen(port, () => {
     console.log("server start on port ", port);
