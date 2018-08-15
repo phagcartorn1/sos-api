@@ -134,8 +134,8 @@ app.post('/login', (req, res) => {
                         _id: doc._id,
                         type: doc.type,
                         name: doc.name,
-                        firstName : doc.firstName,
-                        lastName : doc.lastName,
+                        firstName: doc.firstName,
+                        lastName: doc.lastName,
                         socketName: listenSocket
                     },
                     message: "Login success !!",
@@ -291,10 +291,12 @@ app.post('/call', (req, res) => {
 
 });
 
-app.post('/setOnlineStatus', ()=>{
-    var userID = req.body.userID;
+app.post('/setOnlineStatus', (req,res) => {
+    var userID = req.body.userId;
+    var onlineStatus = req.body.onlineStatus;
 
-    User.findById(userID).then((u)=>{
+
+    User.findById(userID).then((u) => {
 
         if (u == null) {
             res.send({
@@ -305,10 +307,51 @@ app.post('/setOnlineStatus', ()=>{
             });
             return;
         }
+        if(u.type == 'C')
+        {
+            res.send({
+                stauts: '400',
+                data: null,
+                message: 'User type C (Client) can not update online status, please check your type must be A(Agent)',
+                error: null
+            });
+            return;
+
+        }
+
+ 
+
+
+        u.onlineStatus = onlineStatus;
+        u.save().then((doc) => {
+            res.send({
+                stauts: '200',
+                data: {
+                    onlineStatus: doc.onlineStatus,
+                    _id: doc._id,
+                    type: doc.type,
+                    name: doc.name,
+                    firstName: doc.firstName,
+                    lastName: doc.lastName,
+                },
+                message: `Set online status success, now your status is ${onlineStatus} `,
+                error: null
+            });
+
+        }, (e) => {
+
+            res.send({
+                status: 400,
+                data: null,
+                message: "Exception error, please check error filed",
+                error: e
+            });
+
+        });
 
 
 
-    },(e)=>{
+    }, (e) => {
 
         res.send({
             status: 400,
