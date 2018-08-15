@@ -186,7 +186,7 @@ app.post('/login', (req, res) => {
 
 });
 
-app.post('/call', (req, res) => {
+app.post('/client/call', (req, res) => {
 
     var userID = req.body.userId;
     var topicId = req.body.topicId;
@@ -235,25 +235,29 @@ app.post('/call', (req, res) => {
 
                     // Found the agent 
                     if (agents.length > 0) {
-                        // 2 open socket
-                        io.emit('call', {
-                            token: toxToken,
-                            sessionID: session.sessionId,
-                            message: 'In coming call form client'
-                        });
 
-                        // 3 create room 
+
+                        // 2 create room 
                         var agent = agents[0];
                         var room = new Room({
-                            agentId:null,
-                            clientId:userID,
+                            agentId: null,
+                            clientId: userID,
                             dateTimeStart: new Date(),
-                            dateTimeEnd:null,
-                            endBy:null,
-                            activeStatus:true
+                            dateTimeEnd: null,
+                            endBy: null,
+                            activeStatus: true
                         })
 
-                        room.save().then((d)=>{
+                        room.save().then((d) => {
+
+
+                            // 3 open socket
+                            io.emit('call', {
+                                token: toxToken,
+                                sessionID: session.sessionId,
+                                message: 'In coming call form client',
+                                roomId: d._id
+                            });
 
 
                             res.send({
@@ -264,7 +268,7 @@ app.post('/call', (req, res) => {
                             })
 
 
-                        },(e)=>{
+                        }, (e) => {
 
                             res.send({
                                 status: 400,
@@ -319,10 +323,12 @@ app.post('/call', (req, res) => {
 
 });
 
-app.post('/setOnlineStatus', (req, res) => {
+app.post('/agent/setOnlineStatus', (req, res) => {
     var userID = req.body.userId;
     var onlineStatus = req.body.onlineStatus;
 
+    // Todo
+    // check onlinestatus != null user Schemar 
 
     User.findById(userID).then((u) => {
 
@@ -388,6 +394,116 @@ app.post('/setOnlineStatus', (req, res) => {
         });
 
     })
+
+
+});
+
+app.post('/agent/reciveCall', (req, res) => {
+
+    var userID = req.body.userId;
+    var recive = req.body.recive;
+    var roomId = req.body.roomId;
+
+    // find agent if not found return error
+
+    User.findById(userID).then((a) => {
+
+
+        if (a == null) {
+
+            res.send({
+                status: 400,
+                data: null,
+                message: 'User id not found, Please check userID',
+                error: null
+            });
+        }
+        else {
+
+
+            Room.findById(roomId).then((r) => {
+
+                if (r == null) {
+                    // not found room
+                    res.send({
+                        status: 400,
+                        data: null,
+                        message: 'Room not found, Please check roomId',
+                        error: null
+                    });
+                }
+
+                r.agentId = userID
+
+                if (recive == false) {
+                    // Decline
+                    r.dateTimeEnd = new Date();
+                    r.endBy = 'A';
+                    r.activeStatus = false;
+                }
+                else
+                {
+                   // Recive
+                   r.dateTimeEnd = null;
+                   r.endBy = null;
+                   r.activeStatus = true;
+                }
+
+
+                r.save().then((doc) => {
+
+
+                    var message = 'Recive call success'
+                    if (recive == false) {
+                        message = 'Decline call success'
+                    }
+
+
+                    res.send({
+                        status: 200,
+                        data: doc,
+                        message: message,
+                        error: null
+                    })
+
+
+
+                }, (e) => {
+
+                    res.send({
+                        status: 400,
+                        data: null,
+                        message: "Exception error, please check error filed",
+                        error: e
+                    });
+
+                })
+
+
+            }, (e) => {
+                res.send({
+                    status: 400,
+                    data: null,
+                    message: "Exception error, please check error filed",
+                    error: e
+                });
+
+            })
+        }
+
+
+    }, (e) => {
+
+        res.send({
+            status: 400,
+            data: null,
+            message: "Exception error, please check error filed",
+            error: e
+        });
+
+    });
+
+
 
 
 });
