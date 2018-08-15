@@ -28,6 +28,18 @@ var User = mongoose.model('User',{
         required:true,
         trim:true,
         minlenght:1
+    },
+    topicId : {
+        type:String,
+        required:true,
+        trim:true,
+        minlenght:1
+    },
+    languageId : {
+        type:String,
+        required:true,
+        trim:true,
+        minlenght:1
     }
    
 });
