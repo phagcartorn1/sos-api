@@ -134,6 +134,8 @@ app.post('/login', (req, res) => {
                         _id: doc._id,
                         type: doc.type,
                         name: doc.name,
+                        firstName : doc.firstName,
+                        lastName : doc.lastName,
                         socketName: listenSocket
                     },
                     message: "Login success !!",

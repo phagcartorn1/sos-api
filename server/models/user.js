@@ -23,7 +23,13 @@ var User = mongoose.model('User',{
         type:Boolean,
         default : true
     },
-    name : {
+    firstName : {
+        type:String,
+        required:true,
+        trim:true,
+        minlenght:1
+    },
+    lastName : {
         type:String,
         required:true,
         trim:true,
