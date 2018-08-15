@@ -31,13 +31,13 @@ var User = mongoose.model('User',{
     },
     topicId : {
         type:String,
-        required:true,
+        required:false,
         trim:true,
         minlenght:1
     },
     languageId : {
         type:String,
-        required:true,
+        required:false,
         trim:true,
         minlenght:1
     }
