@@ -4,6 +4,7 @@ const SocketIO = require('socket.io');
 const http = require('http');
 var { mongoose } = require('./db/mongoose');
 var { User } = require('./models/user');
+var { Room } = require('./models/room');
 var { opentok } = require('./openTox/opentox');
 
 const port = process.env.PORT || 3000;
@@ -241,12 +242,39 @@ app.post('/call', (req, res) => {
                             message: 'In coming call form client'
                         });
 
-                        res.send({
-                            status: 200,
-                            data: { token: toxToken, sessionID: session.sessionId },
-                            message: 'open tox generate token success',
-                            error: null
+                        // 3 create room 
+                        var agent = agents[0];
+                        var room = new Room({
+                            agentId:null,
+                            clientId:userID,
+                            dateTimeStart: new Date(),
+                            dateTimeEnd:null,
+                            endBy:null,
+                            activeStatus:true
                         })
+
+                        room.save().then((d)=>{
+
+
+                            res.send({
+                                status: 200,
+                                data: { token: toxToken, sessionID: session.sessionId },
+                                message: 'open tox generate token success',
+                                error: null
+                            })
+
+
+                        },(e)=>{
+
+                            res.send({
+                                status: 400,
+                                data: null,
+                                message: "Can not create room , Please check the error",
+                                error: e
+                            });
+
+                        })
+
 
                     }
                     else {
@@ -291,7 +319,7 @@ app.post('/call', (req, res) => {
 
 });
 
-app.post('/setOnlineStatus', (req,res) => {
+app.post('/setOnlineStatus', (req, res) => {
     var userID = req.body.userId;
     var onlineStatus = req.body.onlineStatus;
 
@@ -307,8 +335,7 @@ app.post('/setOnlineStatus', (req,res) => {
             });
             return;
         }
-        if(u.type == 'C')
-        {
+        if (u.type == 'C') {
             res.send({
                 status: 400,
                 data: null,
@@ -319,7 +346,7 @@ app.post('/setOnlineStatus', (req,res) => {
 
         }
 
- 
+
 
 
         u.onlineStatus = onlineStatus;
