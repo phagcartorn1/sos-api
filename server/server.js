@@ -195,7 +195,7 @@ app.post('/call', (req, res) => {
 
         if (u == null) {
             res.send({
-                stauts: '400',
+                stauts: 400,
                 data: null,
                 message: 'userid not found, please check your userid or login again',
                 error: null
@@ -205,7 +205,7 @@ app.post('/call', (req, res) => {
 
         if (u.type == "A") {
             res.send({
-                stauts: '400',
+                stauts: 400,
                 data: null,
                 message: 'user type A (Agent) can not call , Please check user type must be C (Client)',
                 error: null
@@ -218,7 +218,7 @@ app.post('/call', (req, res) => {
 
             if (err) {
                 res.send({
-                    stauts: '400',
+                    stauts: 400,
                     data: null,
                     message: 'open tox can not generate session',
                     error: err
@@ -242,7 +242,7 @@ app.post('/call', (req, res) => {
                         });
 
                         res.send({
-                            stauts: '200',
+                            stauts: 200,
                             data: { token: toxToken, sessionID: session.sessionId },
                             message: 'open tox generate token success',
                             error: null
@@ -300,7 +300,7 @@ app.post('/setOnlineStatus', (req,res) => {
 
         if (u == null) {
             res.send({
-                stauts: '400',
+                stauts: 400,
                 data: null,
                 message: 'userid not found, please check your userid or login again',
                 error: null
@@ -310,7 +310,7 @@ app.post('/setOnlineStatus', (req,res) => {
         if(u.type == 'C')
         {
             res.send({
-                stauts: '400',
+                stauts: 400,
                 data: null,
                 message: 'User type C (Client) can not update online status, please check your type must be A(Agent)',
                 error: null
@@ -325,7 +325,7 @@ app.post('/setOnlineStatus', (req,res) => {
         u.onlineStatus = onlineStatus;
         u.save().then((doc) => {
             res.send({
-                stauts: '200',
+                stauts: 200,
                 data: {
                     onlineStatus: doc.onlineStatus,
                     _id: doc._id,
