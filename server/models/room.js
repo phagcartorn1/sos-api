@@ -34,7 +34,10 @@ var Room = mongoose.model('Room',{
     activeStatus:{
         type:Boolean,
         required:true
-    }
+    },
+    rate:{
+        type:Number
+   }
 
 });
 
