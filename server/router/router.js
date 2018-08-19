@@ -1,6 +1,3 @@
-// var { User } = require('.././models/user');
-// var { Room } = require('.././models/room');
-// var { opentok } = require('.././openTox/opentox');
 var express = require('express')
 var router = express.Router()
 
@@ -15,11 +12,16 @@ router.get("/", (req, res) => {
     res.send("Connected to toxbox POC");
 });
 
+
+// client api
 router.post('/login',require('./post/login'));
 router.post('/client/call',require('./post/call'));
-router.post('/agent/setOnlineStatus',require('./post/setOnlineStatus'));
-router.post('/agent/receiveCall',require('./post/reciveCall'));
 router.post('/client/setRate',require('./post/setRate'));
+
+// agent api
+router.post('/agent/setOnlineStatus',require('./post/setOnlineStatus'));
+router.post('/agent/receiveCall',require('./post/receiveCall'));
+
 // for create dummy data
 router.post('/createData',require('./post/createData'));
 
