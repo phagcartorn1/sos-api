@@ -78,7 +78,7 @@ call.post('/client/call', (req, res) => {
                             var io = SocketIO(server);
                             io.emit('call', {
                                 token: toxToken,
-                                sessionID: session.sessionId,
+                                sessionId: session.sessionId,
                                 message: 'In coming call form client',
                                 roomId: d._id
                             });
