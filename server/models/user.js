@@ -1,4 +1,6 @@
-var mongoose = require("mongoose");
+
+var {mongoose} = require('.././db/mongoose');
+
 
 var User = mongoose.model('User',{
     userName:{
@@ -49,7 +51,5 @@ var User = mongoose.model('User',{
     }
    
 });
-
-
 
 module.exports = {User};
