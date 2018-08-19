@@ -76,6 +76,8 @@ call.post('/client/call', (req, res) => {
 
                             // 3 open socket
                             var io = SocketIO(server);
+
+                            console.log('try to emi');
                             io.emit('call', {
                                 token: toxToken,
                                 sessionId: session.sessionId,
