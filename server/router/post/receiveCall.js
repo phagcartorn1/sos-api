@@ -110,14 +110,14 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                         })
 
                    }).catch((e)=>{
-                
-                    console.log('failed')
+
+
 
                     res.send({
                         status: 400,
-                        data: doc,
+                        data: null,
                         message: 'Exception error, please check error filed',
-                        error: e
+                        error: e.response.data
                     })
 
                     
