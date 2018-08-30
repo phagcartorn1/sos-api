@@ -87,7 +87,7 @@ call.post('/client/call', (req, res) => {
 
                             res.send({
                                 status: 200,
-                                data: { token: toxToken, sessionID: session.sessionId },
+                                data: { token: toxToken, sessionID: session.sessionId ,roomId: d.id},
                                 message: 'open tox generate token success',
                                 error: null
                             })

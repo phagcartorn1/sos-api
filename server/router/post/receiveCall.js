@@ -110,10 +110,13 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
 
                    }).catch((e)=>{
 
-
+                    const url = `https://api.opentok.com/v2/project/${API_KEY}/session/${SESSION_ID}/signal`
                     res.send({
                         status: e.response.status,
-                        data: null,
+                        data: {url:url,param:{SESSION_ID:SESSION_ID,
+                            API_KEY:API_KEY,
+                            API_SECRET:API_SECRET,
+                            DATA:'{"type":"agentAccepted"}'}},
                         message: 'Exception error, please check error filed',
                         error: e.response.data
                     })
