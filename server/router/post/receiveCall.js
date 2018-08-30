@@ -98,9 +98,9 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                          console.log('signal success')
 
                         res.send({
-                            status: 200,
+                            status: response.status,
                             data: doc,
-                            message: message,
+                            message: response,
                             error: null
                         })
 
