@@ -65,6 +65,7 @@ app.post('/client/call', (req, res) => {
 
         opentok.createSession((err, session) => {
 
+
             if (err) {
                 res.send({
                     status: 400,
@@ -76,7 +77,6 @@ app.post('/client/call', (req, res) => {
             else {
 
                 var toxToken = session.generateToken();
-
                 // Todo 
                 // 1 find agent to call match with topic and language
                 User.find({ languageId: languageId, topicId: topicId }).then((agents) => {
@@ -93,15 +93,12 @@ app.post('/client/call', (req, res) => {
                             dateTimeStart: new Date(),
                             dateTimeEnd: null,
                             endBy: null,
-                            activeStatus: true
+                            activeStatus: true,
+                            sessionId:session.sessionId
                         })
 
                         room.save().then((d) => {
-
-
                             // 3 open socket
-
-                            console.log('try to emi');
                             io.emit('call', {
                                 token: toxToken,
                                 sessionId: session.sessionId,

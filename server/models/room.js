@@ -37,6 +37,12 @@ var Room = mongoose.model('Room',{
     },
     rate:{
         type:Number
+   },
+   sessionId:{
+    type:String,
+    required:false,
+    trim:true,
+    minlenght:1
    }
 
 });
