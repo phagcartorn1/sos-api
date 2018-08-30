@@ -91,33 +91,19 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                    // Signal
                    axios.post(`https://api.opentok.com/v2/project/${API_KEY}/session/${SESSION_ID}/signal`,
                    {
-                     data: "agentAccepted" 
+                    "type":"agentAccepted","data":"agentAccepted"
                    },
                    { headers: {'X-TB-PARTNER-AUTH': API_KEY + ":" + API_SECRET  ,'Content-Type':'application/json'}}).then((response)=>{
-                
+    
                          console.log('signal success',response);
 
-                         if(response.status == 200)
-                         {
-                            res.send({
-                                status: response.status,
-                                data: doc,
-                                message: "success",
-                                error: null
-                            })
-                         }
-                         else
-                         {
-                            res.send({
-                                status: response.status,
-                                data: null,
-                                message: "Error",
-                                error: null
-                            })
 
-                         }
-
-                   
+                         res.send({
+                            status: response.status,
+                            data: doc,
+                            message: "success",
+                            error: null
+                        })
 
                    }).catch((e)=>{
 
