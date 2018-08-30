@@ -112,9 +112,8 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                    }).catch((e)=>{
 
 
-
                     res.send({
-                        status: 400,
+                        status: e.response.status,
                         data: null,
                         message: 'Exception error, please check error filed',
                         error: e.response.data
