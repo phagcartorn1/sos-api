@@ -95,14 +95,29 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                    },
                    { headers: {'X-TB-PARTNER-AUTH': API_KEY + ":" + API_SECRET  ,'Content-Type':'application/json'}}).then((response)=>{
                 
-                         console.log('signal success')
+                         console.log('signal success',response);
 
-                        res.send({
-                            status: response.status,
-                            data: doc,
-                            message: response,
-                            error: null
-                        })
+                         if(response.status == 200)
+                         {
+                            res.send({
+                                status: response.status,
+                                data: doc,
+                                message: "success",
+                                error: null
+                            })
+                         }
+                         else
+                         {
+                            res.send({
+                                status: response.status,
+                                data: null,
+                                message: "Error",
+                                error: null
+                            })
+
+                         }
+
+                   
 
                    }).catch((e)=>{
 
