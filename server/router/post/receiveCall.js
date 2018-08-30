@@ -1,5 +1,4 @@
 var express = require('express')
-const {SHA256} = require('crypto-js')
 const jwt = require('jsonwebtoken')
 const axios = require('axios')
 
