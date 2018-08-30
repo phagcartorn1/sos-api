@@ -89,16 +89,13 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                    var token = jwt.sign(data,'tox');
 
 
-
-        
-
                    // Signal
                    axios.post(`https://api.opentok.com/v2/project/${API_KEY}/session/${SESSION_ID}/signal`,
                    {
                     SESSION_ID:SESSION_ID,
                     API_KEY:API_KEY,
                     API_SECRET:API_SECRET,
-                    DATA:'{"type":"foo","data":"bar"}'
+                    DATA:'{"type":"agentAccepted"}'
                     
                    },{ headers: {'X-TB-PARTNER-AUTH': API_KEY + ":" + API_SECRET  ,'Content-Type':'application/json'}}).then((response)=>{
                 
@@ -116,7 +113,6 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                 
                     console.log('failed')
 
-                    //  console.log(e.response.status);
                     res.send({
                         status: 400,
                         data: doc,
