@@ -43,6 +43,12 @@ var Room = mongoose.model('Room',{
     required:false,
     trim:true,
     minlenght:1
+   },
+   token:{
+    type:String,
+    required:false,
+    trim:true,
+    minlenght:1
    }
 
 });

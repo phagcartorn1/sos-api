@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 
 // client api
 router.post('/login',require('./post/login'));
-//router.post('/client/call',require('./post/call'));
+router.post('/client/call',require('./post/call'));
 router.post('/client/setRate',require('./post/setRate'));
 
 // agent api

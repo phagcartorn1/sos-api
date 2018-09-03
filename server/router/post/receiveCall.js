@@ -2,25 +2,17 @@ var express = require('express')
 const jwt = require('jsonwebtoken')
 const axios = require('axios')
 
-
 var receiveCall = express.Router()
 var {User} = require('../../models/user');
 var {Room} = require('../../models/room');
 
-
-
 receiveCall.post('/agent/receiveCall', (req, res) => {
-
-  
-
-
 
     var userID = req.body.userId;
     var receive = req.body.receive;
     var roomId = req.body.roomId;
 
     User.findById(userID).then((a) => {
-
 
         if (a == null) {
 
@@ -32,7 +24,6 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
             });
         }
         else {
-
 
             Room.findById(roomId).then((r) => {
 
@@ -95,8 +86,6 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                    },
                    { headers: {'X-TB-PARTNER-AUTH': API_KEY + ":" + API_SECRET  ,'Content-Type':'application/json'}}).then((response)=>{
     
-                         console.log('signal success',response);
-
 
                          res.send({
                             status: response.status,
@@ -120,14 +109,6 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
 
                     
                    })
-
-
-
-
-
-                    
-                
-
 
 
                 }, (e) => {
@@ -162,6 +143,8 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
             message: "Exception error, please check error filed",
             error: e
         });
+
+
     });
 });
 

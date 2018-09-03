@@ -1,11 +1,8 @@
 var express = require('express')
 var call = express.Router()
 var { opentok } = require('../.././openTox/opentox');
-var  {User}  = require('../.././models/user')
-var  {Room}  = require('../.././models/room')
-var {server} = require('../../server')
-const SocketIO = require('socket.io');
-
+var { User } = require('../.././models/user')
+var { Room } = require('../.././models/room')
 
 
 call.post('/client/call', (req, res) => {
@@ -14,7 +11,7 @@ call.post('/client/call', (req, res) => {
     var topicId = req.body.topicId;
     var languageId = req.body.languageId;
 
-    
+
     User.findById(userID).then((u) => {
 
         if (u == null) {
@@ -40,6 +37,7 @@ call.post('/client/call', (req, res) => {
 
         opentok.createSession((err, session) => {
 
+
             if (err) {
                 res.send({
                     status: 400,
@@ -51,7 +49,6 @@ call.post('/client/call', (req, res) => {
             else {
 
                 var toxToken = session.generateToken();
-
                 // Todo 
                 // 1 find agent to call match with topic and language
                 User.find({ languageId: languageId, topicId: topicId }).then((agents) => {
@@ -63,31 +60,29 @@ call.post('/client/call', (req, res) => {
                         // 2 create room 
                         var agent = agents[0];
                         var room = new Room({
-                            agentId: null,
+                            agentId: agent.id,
                             clientId: userID,
                             dateTimeStart: new Date(),
                             dateTimeEnd: null,
                             endBy: null,
-                            activeStatus: true
+                            activeStatus: true,
+                            sessionId: session.sessionId,
+                            token : toxToken
                         })
 
                         room.save().then((d) => {
 
-
                             // 3 open socket
-                            var io = SocketIO(server);
-
-                            console.log('try to emi');
-                            io.emit('call', {
-                                token: toxToken,
-                                sessionId: session.sessionId,
-                                message: 'In coming call form client',
-                                roomId: d._id
-                            });
+                            // io.emit('call', {
+                            //     token: toxToken,
+                            //     sessionId: session.sessionId,
+                            //     message: 'In coming call form client',
+                            //     roomId: d._id
+                            // });
 
                             res.send({
                                 status: 200,
-                                data: { token: toxToken, sessionID: session.sessionId ,roomId: d.id},
+                                data: { token: toxToken, sessionId: session.sessionId, roomId: d.id },
                                 message: 'open tox generate token success',
                                 error: null
                             })
@@ -108,17 +103,13 @@ call.post('/client/call', (req, res) => {
                     else {
 
 
-                        // No agent avaliable
                         res.send({
                             status: 400,
                             data: null,
                             message: "No agent avaliable or match with your options , Please try other topic and language",
                             error: null
                         });
-
                     }
-
-
                 }, (e) => {
                     res.send({
                         status: 400,
@@ -128,10 +119,7 @@ call.post('/client/call', (req, res) => {
                     });
 
                 });
-
-
             }
-
         });
 
     }, (e) => {
@@ -144,8 +132,8 @@ call.post('/client/call', (req, res) => {
         });
 
     })
-    
+
 });
 
 
-module.exports  = call;
+module.exports = call;

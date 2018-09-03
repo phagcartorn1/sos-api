@@ -3,9 +3,9 @@ var bodyParser = require('body-parser');
 const SocketIO = require('socket.io');
 const http = require('http');
 const router = require('./router/router');
-var {User} = require('./models/user');
-var {Room} = require('./models/room');
-var {opentok} = require('./openTox/opentox');
+var { User } = require('./models/user');
+var { Room } = require('./models/room');
+var { opentok } = require('./openTox/opentox');
 
 const port = process.env.PORT || 3000;
 
@@ -32,131 +32,94 @@ app.use('/', router);
 var server = http.createServer(app);
 var io = SocketIO(server);
 
+app.post('/client/joinRoom', (req, res) => {
 
-app.post('/client/call', (req, res) => {
+    var userId = req.body.userId;
+    var roomId = req.body.roomId;
 
-    var userID = req.body.userId;
-    var topicId = req.body.topicId;
-    var languageId = req.body.languageId;
 
-    
-    User.findById(userID).then((u) => {
 
-        if (u == null) {
+    User.findById(userId).then((result) => {
+
+        if (result == null) {
+
             res.send({
                 status: 400,
                 data: null,
-                message: 'userid not found, please check your userid or login again',
+                message: 'User id not found, Please check userID',
                 error: null
             });
-            return;
         }
+        else {
 
-        if (u.type == "A") {
-            res.send({
-                status: 400,
-                data: null,
-                message: 'user type A (Agent) can not call , Please check user type must be C (Client)',
-                error: null
-            });
-            return;
-        }
+            Room.findById(roomId).then((r) => {
 
+                if (r == null) {
+                    console.log('4');
 
-        opentok.createSession((err, session) => {
-
-
-            if (err) {
-                res.send({
-                    status: 400,
-                    data: null,
-                    message: 'open tox can not generate session',
-                    error: err
-                })
-            }
-            else {
-
-                var toxToken = session.generateToken();
-                // Todo 
-                // 1 find agent to call match with topic and language
-                User.find({ languageId: languageId, topicId: topicId }).then((agents) => {
-
-                    // Found the agent 
-                    if (agents.length > 0) {
-
-
-                        // 2 create room 
-                        var agent = agents[0];
-                        var room = new Room({
-                            agentId: null,
-                            clientId: userID,
-                            dateTimeStart: new Date(),
-                            dateTimeEnd: null,
-                            endBy: null,
-                            activeStatus: true,
-                            sessionId:session.sessionId
-                        })
-
-                        room.save().then((d) => {
-                            // 3 open socket
-                            io.emit('call', {
-                                token: toxToken,
-                                sessionId: session.sessionId,
-                                message: 'In coming call form client',
-                                roomId: d._id
-                            });
-
-                            res.send({
-                                status: 200,
-                                data: { token: toxToken, sessionId: session.sessionId ,roomId:d.id},
-                                message: 'open tox generate token success',
-                                error: null
-                            })
-
-                        }, (e) => {
-
-                            res.send({
-                                status: 400,
-                                data: null,
-                                message: "Can not create room , Please check the error",
-                                error: e
-                            });
-
-                        })
-
-
-                    }
-                    else {
-
-
-                        // No agent avaliable
-                        res.send({
-                            status: 400,
-                            data: null,
-                            message: "No agent avaliable or match with your options , Please try other topic and language",
-                            error: null
-                        });
-
-                    }
-
-
-                }, (e) => {
+                    // not found room
                     res.send({
                         status: 400,
                         data: null,
-                        message: "Exception error, please check error filed",
-                        error: e
+                        message: 'Room not found, Please check roomId',
+                        error: null
                     });
+                }
+                else {
+                    r.clientId = userId
+                    r.save().then((result) => {
 
+                        res.send({
+                            status: 200,
+                            data: null,
+                            message: "Join room success",
+                            error: null
+                        });
+
+
+                        // Call to agent   
+                        io.emit('call', {
+                            token: r.token,
+                            sessionId: r.sessionId,
+                            message: 'In coming call form client',
+                            roomId: r._id
+                        });
+
+
+                    }, (e) => {
+                        console.log('3');
+
+
+                        res.send({
+                            status: 400,
+                            data: null,
+                            message: "Exception error, please check error filed",
+                            error: e
+                        });
+
+                    })
+                }
+
+            }).catch((e) => {
+                console.log('2');
+
+                res.send({
+                    status: 400,
+                    data: null,
+                    message: "Exception error, please check error filed",
+                    error: e
                 });
 
 
-            }
+            })
 
-        });
 
-    }, (e) => {
+        }
 
+    },(e)=>{
+
+
+        console.log('1');
         res.send({
             status: 400,
             data: null,
@@ -164,9 +127,11 @@ app.post('/client/call', (req, res) => {
             error: e
         });
 
-    })
-    
+
+    } )
+
 });
+
 
 
 server.listen(port, () => {
@@ -175,6 +140,6 @@ server.listen(port, () => {
 
 
 
-module.exports  = server;
+module.exports = server;
 
 
