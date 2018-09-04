@@ -1,10 +1,10 @@
 var express = require('express')
-const jwt = require('jsonwebtoken')
 const axios = require('axios')
 
 var receiveCall = express.Router()
-var {User} = require('../../models/user');
-var {Room} = require('../../models/room');
+var { User } = require('../../models/user');
+var { Room } = require('../../models/room');
+var { sendSignal } = require('../../openTox/opentox')
 
 receiveCall.post('/agent/receiveCall', (req, res) => {
 
@@ -45,12 +45,11 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                     r.endBy = 'A';
                     r.activeStatus = false;
                 }
-                else
-                {
-                   // receive
-                   r.dateTimeEnd = null;
-                   r.endBy = null;
-                   r.activeStatus = true;
+                else {
+                    // receive
+                    r.dateTimeEnd = null;
+                    r.endBy = null;
+                    r.activeStatus = true;
                 }
 
 
@@ -63,52 +62,34 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
                     }
 
                     // Signal
-                    var today = Math.floor(Date.now() / 1000);
-                    var tomorow = Math.floor(Date.now() / 1000) +    (60 * 60);
-                    var API_KEY = '46165962';
-                    var SESSION_ID = r.sessionId;
-                    var API_SECRET = '29949ed67984643123a5223cabd47a8fb90e36ff'
-                
-                    
-                   // Generate token toxbox here 
-                   var data = { "iss": API_KEY,
-                                "ist": 'account',
-                                "iat": today,
-                                "exp": tomorow,
-                                "jti": "jwt_nonce"};
-                   var token = jwt.sign(data,'tox');
+
+                    sendSignal({ "type": "agentAccepted", "data": "agentAccepted" }, r.sessionId, (response, err) => {
 
 
-                   // Signal
-                   axios.post(`https://api.opentok.com/v2/project/${API_KEY}/session/${SESSION_ID}/signal`,
-                   {
-                    "type":"agentAccepted","data":"agentAccepted"
-                   },
-                   { headers: {'X-TB-PARTNER-AUTH': API_KEY + ":" + API_SECRET  ,'Content-Type':'application/json'}}).then((response)=>{
-    
+                        if (response) {
 
-                         res.send({
-                            status: response.status,
-                            data: doc,
-                            message: "success",
-                            error: null
-                        })
 
-                   }).catch((e)=>{
+                            res.send({
+                                status: response.status,
+                                data: doc,
+                                message: message,
+                                error: null
+                            })
 
-                    const url = `https://api.opentok.com/v2/project/${API_KEY}/session/${SESSION_ID}/signal`
-                    res.send({
-                        status: e.response.status,
-                        data: {url:url,param:{SESSION_ID:SESSION_ID,
-                            API_KEY:API_KEY,
-                            API_SECRET:API_SECRET,
-                            DATA:'{"type":"agentAccepted"}'}},
-                        message: 'Exception error, please check error filed',
-                        error: e.response.data
-                    })
+                        }
+                        else {
 
-                    
-                   })
+                            res.send({
+                                status: err.response.status,
+                                data: null,
+                                message: 'Exception error, please check error filed',
+                                error: err.response.data
+                            })
+                        }
+
+
+
+                    });
 
 
                 }, (e) => {

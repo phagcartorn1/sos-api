@@ -11,7 +11,6 @@ call.post('/client/call', (req, res) => {
     var topicId = req.body.topicId;
     var languageId = req.body.languageId;
 
-
     User.findById(userID).then((u) => {
 
         if (u == null) {
@@ -21,6 +20,7 @@ call.post('/client/call', (req, res) => {
                 message: 'userid not found, please check your userid or login again',
                 error: null
             });
+            
             return;
         }
 
