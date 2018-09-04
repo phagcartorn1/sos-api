@@ -31,7 +31,11 @@ clientEndCall.post('/client/endCall', (req, res) => {
 
             selectedRoom.save().then((r) => {
 
+                // send socket
+
+
                 // Send signal
+                /*
                 var signalPayload = { "type": "clientEndCall", "data": "clientEndCall" }
                 sendSignal(signalPayload, selectedRoom.sessionId, (result, err) => {
 
@@ -54,7 +58,7 @@ clientEndCall.post('/client/endCall', (req, res) => {
                         })
                     }
 
-                });
+                });*/
 
 
 
@@ -67,16 +71,6 @@ clientEndCall.post('/client/endCall', (req, res) => {
                     error: e
                 })
             });
-
-
-
-
-
-
-
-
-
-
 
         }
 

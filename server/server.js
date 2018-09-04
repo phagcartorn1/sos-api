@@ -87,7 +87,6 @@ app.post('/client/joinRoom', (req, res) => {
 
 
                     }, (e) => {
-                        console.log('3');
 
 
                         res.send({
@@ -131,6 +130,107 @@ app.post('/client/joinRoom', (req, res) => {
     } )
 
 });
+
+
+app.post('/client/endCall', (req, res) => {
+
+    var userId = req.body.userId;
+    var roomId = req.body.roomId
+
+    Room.findById(roomId).then((selectedRoom) => {
+
+
+        if (userId != selectedRoom.clientId) {
+
+            res.send({
+                status: 400,
+                data: null,
+                message: "Not found userId in this room , Please check your userId",
+                error: e
+            });
+        }
+        else {
+
+            // Found user in this room 
+            // update room status
+            selectedRoom.dateTimeEnd = new Date();
+            selectedRoom.endBy = "C";
+            selectedRoom.activeStatus = false;
+
+            selectedRoom.save().then((r) => {
+
+                res.send({
+                    status: 200,
+                    data: null,
+                    message: "end call success",
+                    error: null
+                })
+
+                // send socket
+                io.emit('endCall', {
+                    token: r.token,
+                    sessionId: r.sessionId,
+                    message: 'Client end call',
+                    roomId: r._id
+                });
+
+                // Send signal
+                /*
+                var signalPayload = { "type": "clientEndCall", "data": "clientEndCall" }
+                sendSignal(signalPayload, selectedRoom.sessionId, (result, err) => {
+
+                    if (result) {
+
+                        res.send({
+                            status: response.status,
+                            data: doc,
+                            message: "end call success",
+                            error: null
+                        })
+                    }
+                    else {
+
+                        res.send({
+                            status: err.response.status,
+                            data: null,
+                            message: 'Exception error, please check error filed',
+                            error: err.response.data
+                        })
+                    }
+
+                });*/
+
+
+
+            }, (e) => {
+
+                res.send({
+                    status: 400,
+                    data: null,
+                    message: 'Exception error, please check error filed',
+                    error: e
+                })
+            });
+
+        }
+
+
+
+
+    }).catch((e) => {
+
+        res.send({
+            status: 400,
+            data: null,
+            message: "Exception error, please check error filed",
+            error: e
+        });
+
+    })
+
+
+
+})
 
 
 
