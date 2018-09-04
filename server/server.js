@@ -168,8 +168,6 @@ app.post('/client/endCall', (req, res) => {
 
                 // send socket
                 io.emit('endCall', {
-                    token: r.token,
-                    sessionId: r.sessionId,
                     message: 'Client end call',
                     roomId: r._id
                 });
