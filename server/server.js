@@ -167,36 +167,14 @@ app.post('/client/endCall', (req, res) => {
                 })
 
                 // send socket
-                io.emit('endCall', {
+
+                // of
+                io.emit('clientEndCall', {
                     message: 'Client end call',
                     roomId: r._id
                 });
 
-                // Send signal
-                /*
-                var signalPayload = { "type": "clientEndCall", "data": "clientEndCall" }
-                sendSignal(signalPayload, selectedRoom.sessionId, (result, err) => {
-
-                    if (result) {
-
-                        res.send({
-                            status: response.status,
-                            data: doc,
-                            message: "end call success",
-                            error: null
-                        })
-                    }
-                    else {
-
-                        res.send({
-                            status: err.response.status,
-                            data: null,
-                            message: 'Exception error, please check error filed',
-                            error: err.response.data
-                        })
-                    }
-
-                });*/
+           
 
 
 
