@@ -57,13 +57,15 @@ receiveCall.post('/agent/receiveCall', (req, res) => {
 
 
                     var message = 'receive call success'
+                    var payload = { "type": "agentAccepted", "data": "agentAccepted" }
                     if (receive == false) {
                         message = 'Decline call success'
+                        payload = { "type": "agentDeclined", "data": "agentDeclined" }
                     }
 
                     // Signal
 
-                    sendSignal({ "type": "agentAccepted", "data": "agentAccepted" }, r.sessionId, (response, err) => {
+                    sendSignal(payload, r.sessionId, (response, err) => {
 
 
                         if (response) {
