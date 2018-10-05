@@ -1,8 +1,8 @@
 var OpenTok = require('opentok');
 const axios = require('axios')
 
-const apiKey = '46165962';
-const apiSecret = '29949ed67984643123a5223cabd47a8fb90e36ff';
+const apiKey = '46198462';
+const apiSecret = 'f57c85fefb08425a7dd3842ddef0a306fbc1a7ca';
 var opentok = new OpenTok(apiKey, apiSecret);
 
 
